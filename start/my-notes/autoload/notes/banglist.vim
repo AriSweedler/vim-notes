@@ -20,7 +20,7 @@ function! notes#banglist#subslide(slide, src, dst)
 
   " Move to the start of the line before executing forward search, so
   " invocations work linewise isntead of characterwise
-  normal ^
+  normal 0
 
   if a:slide
     " Undo the substitution on this line and go to the next pattern
@@ -29,6 +29,7 @@ function! notes#banglist#subslide(slide, src, dst)
   endif
 
   call search(l:src_pat)
+  normal zx
   execute "substitute/" . l:src_pat . "/" . a:dst . "/e"
   call search(l:dst_pat)
 endfunction

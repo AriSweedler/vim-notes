@@ -1,9 +1,10 @@
-" TODO can't call ChangeTextWidth unless it's defined in this plugin
-" TODO Make a different plugin in this pack to do this?
-call ChangeTextWidth(80)
 
+" Indent settings
 setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 setlocal spell
+
+" Textwrap at 80 columns
+call lib#changeTextWidth(80)
 
 " Set folding for 3-backtick markdown divider block
 setlocal foldmethod=marker foldmarker={{{,}}}
@@ -19,6 +20,9 @@ setlocal formatlistpat=^\\s*[-*+]\\s\\+\\ze\\S
 setlocal nowrap
 setlocal conceallevel=2
 setlocal concealcursor=nc
+
+"Show how deep in folds each line is in the left columns
+setlocal foldcolumn=2
 
 " Invoke my plugin
 call notes#init()
