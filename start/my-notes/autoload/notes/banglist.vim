@@ -13,6 +13,8 @@ let g:notes#banglist#src = 'DO'
 let g:notes#banglist#dst = 'DONE'
 " Finds the next line containing src and changes it to dst. If 'slide' is set to
 " true, first changes this line from dst to src.
+"
+" TODO WHY DOES INVOKING ON THE BEGINNING OF PATTERN FAIL?
 function! notes#banglist#subslide(slide, src, dst)
   " Convenience variables
   let l:src_pat = notes#banglist#item(a:src)
@@ -78,6 +80,14 @@ function! notes#banglist#toggle_backburner_highlight()
   execute "highlight notesBackburner term=standout ctermfg=" . g:notes#banglist#bb_color
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+""""""""""""""""""""""""""""""" DONE highlight """""""""""""""""""""""""""""" {{{
+"" Toggle between 23 and 238. Half optimized for literally no reason haha !
+"let g:notes#banglist#dd_color = 23
+"function! notes#banglist#toggle_done_highlight()
+"  let g:notes#banglist#dd_color = 23 + (238-23)*(g:notes#banglist#dd_color == 23)
+"  execute "highlight notesDONE term=standout ctermfg=" . g:notes#banglist#dd_color
+"endfunction
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""""""""""" global """""""""""""""""""""""""""""""""" {{{
 " Acts just like :global, but only checks for banglist items. This is stricter
 " and more semantically useful sometimes
