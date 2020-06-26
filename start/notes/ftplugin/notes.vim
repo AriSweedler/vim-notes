@@ -1,3 +1,7 @@
+if exists('g:ftloaded_sweedlerNotes')
+  finish
+endif
+let g:ftloaded_sweedlerNotes = 1
 
 " Indent settings
 setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab

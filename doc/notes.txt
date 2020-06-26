@@ -1,0 +1,241 @@
+*notes.txt* A plugin to help me take notes
+
+Author:      Ari Sweedler <http://ari.sweedler.com>
+License:     MIT
+Last change: 2020 Jun 26
+
+INTRODUCTION                                    *notes* *notes-plugin*
+
+When you open a "*.notes" file, gain access to some fun commands. Not
+included: the bash script to manage metadata (find that here:
+https://github.com/AriSweedler/dotfiles/blob/master/.local/bin/notes.sh)
+
+==============================================================================
+MINDSET                                         *notes-mindset*
+
+I have a mental model of what note-taking should be. If you wanna use this
+plugin, subscribe to that. Use the bash script linked in *notes-plugin*
+
+The script does 2 important things:
+1. cd's to the |notes-home-directory|, and logs entries in .daykeeper (see
+  * |notes-daykeeper| being in the pwd is needed for the |notes-yesterday|
+  commands to work.
+2. Open today's note file and yesterday's note file in split windows.
+  * I like having yesterdays notes open in a vertical split to quickly refer
+  to older thoughts.
+  * Because of this pattern, I got lazy when implementing the
+  |notes-<Leader>T| command, and allowed the plumbing command
+  notes#getNamedFold(pattern) to rely on |CTRL-W_w| (instead of, say,
+  notes#yesterday#openHelper like |notes-yesterday|. Or instead of something
+  smart like `:buffer #`)
+
+So either use my script, don't use those functionality of this plugin, or
+write your own thang.
+
+Additionally, there are a few concepts you may want to be aware of:
+
+Banglist                A one-line TODO task. Starts with `* <Keyword>` and
+                        ends with `!`. See |notes-banglist|
+
+                                                *notes-named-fold*
+Named folds             A few functions can operate on these objects. It's
+
+                                                *notes-home-directory*
+Notes Home Directory    Every file must be under this in the heirarchy. The
+                        .git repo tracking your notes should also reside here.
+                        And the |notes-daykeeper| file, too.
+
+                                                *notes-daykeeper*
+.daykeeper              A file in the |notes-home-directory|. Keeps track of
+                        every day that you take notes. (So if it's a Monday,
+                        we can easily see that Friday is "yesterday".) Just a
+                        super simple implementation of finding what day
+                        yesterday was, no need to think about months or years
+                        or leap days or anything else spooky.
+
+==============================================================================
+BANGLIST                                        *notes-banglist*
+
+The banglist is a simple TODO list, implemented as a bulleted list with
+different syntax highlighting styles. If the first word is a
+|banglist-keyword|, and the last char is a !, then syntax highlighting will be
+applied, and there exist mappings designed to operate on them. Think about
+Jira, but before it hit puberty or learned to tie its shoes.
+
+Mappings have been provided to operate on banglist keywords (ignoring the
+actual text the banglist lines contain). Invoking a command twice without
+moving the cursor causes the command to do something slightly different. See
+|notes_!| for an example. To override this default sequential behavior, use
+|notes_1|.
+
+Banglist Keywords ~                             *banglist-keywords*
+
+Each of these is highlighted with the highlight group "notes<keyword>"
+DO                                              *banglist-DO*
+DONE                                            *banglist-DONE*
+Backburner                                      *banglist-Backburner*
+
+TODO banglist sequence
+
+Banglist Maps ~                                 *banglist-maps*
+
+All banglist operataions are linewise.
+
+                                                *notes_!*
+!                       The eponymous function. Turn the next |banglist-DO|
+                        line into a |banglist-DONE|. Sequential invocations
+                        will slide the DONE line to the next DO.
+
+Example. Start with the text
+
+  * DO Task1
+  * DO Task2
+  * Backburner Task3
+
+And invoke |notes_!| with the cursor on Task1's line. This starts a sequence.
+You will get:
+
+  * DONE Task1
+  * DO Task2
+  * Backburner Task3
+
+Invoke |notes_!| again, and the sequential operation will happen. The
+|banglist-DONE| will slide down to the next available DO, and you will get:
+
+  * DO Task1
+  * DONE Task2
+  * Backburner Task3
+
+                                                *notes_1*
+1                       Break a banglist sequence. Literally a useless
+                        command, you can just hit any movement command. But
+                        come one!! That would be lazy. We gotta write an
+                        explicit way to do nothing.
+
+Example. Start with the text
+
+  * DO Task1
+  * DO Task2
+  * Backburner Task3
+
+And invoke |notes_!| with the cursor on Task1's line. This starts a sequence.
+You will get:
+
+  * DONE Task1
+  * DO Task2
+  * Backburner Task3
+
+Invoke |notes_1| to break the sequence. Then, when you invoke |notes_!| again,
+you start a new sequence. You will get:
+
+  * DONE Task1
+  * DONE Task2
+  * Backburner Task3
+
+
+                                                *notes_?*
+?                       Turn the next |banglist-DO| into a
+                        |banglist-Backburner|. Sequential invocations will
+                        slide the Backburner to the next DO.
+
+                                                *notes_<Leader>!*
+<Leader>!               Move the cursor to the next |banglist-DO|.
+
+                                                *notes_<Leader>?*
+<Leader>?               Toggle highlight color of |banglist-Backburner| lines.
+
+Banglist Commands ~                             *banglist-commands*
+
+I consider these plumbing commands, so I am too lazy to explain them in docs.
+You can manually use notes#banglist#controller or notes#banglist#global, if
+you care. But you'll have to read the source code (or email me and ask me what
+they do :P)
+
+==============================================================================
+MAPS                                            *notes-maps*
+
+                                                *notes-<Leader>T*
+<Leader>T               Bring over the named fold 'TODOs' from yesterdays's
+                        file. Delete all the |banglist-DONE| lines after
+                        making the move. See |notes-named-folds| and
+                        |notes-daykeeper|.
+
+                                                *notes-<Leader>y*
+                                                *notes-yesterday*
+<Leader>y               Edit yesterday's file, relative to the current file
+                        (look this up in the |notes-daykeeper| file). If given
+                        a [count], go back [count] days.
+
+                                                *notes-<Leader>Y*
+<Leader>Y               Edit tomorrow's file, relative to the current file. If
+                        given a [count], go forward [count] days.
+
+                                                *notes-gx*
+gx                      Invoke `:!open` on whatver |notes-link| your cursor is
+                        over. If your cursor is not over any links, then the
+                        first link on the line will be opened
+
+==============================================================================
+COMMANDS                                        *notes-commands*
+
+                                                *:NotesToday*
+:NotesToday             Edit today's file. Relative to the actual date.
+
+                                                *:NotesYesterday*
+:NotesYesterday         Edit yesterday's file. Relative to the actual date.
+
+                                                *:FoldOpen*
+:FoldOpen               Open the fold named [arg]. Internally invokes |/|, so
+                        you can use that to your advantage for prefix
+                        matching.
+
+                                                *:FixPastedPDF*
+:FixPastedPDF           Writing documentation is lame this just converts
+                        5 or so spooky unicode multibyte characters into their
+                        ascii equivalent.
+
+                                                *notes_C-k*
+<C-k>                   Make a markdown link. If this works for you then
+                        that's pretty cool lol. Basically, visually select
+                        the link's text, and have the link's URL in the |"*|
+                        register. You will get [text](URL).
+
+                        You must have 'clipboard=unnamed' for this to work.
+
+                        If you're in normal/insert mode, then this mapping
+                        operates on the |WORD| under the cursor.
+
+==============================================================================
+FTPLUGIN                                        *notes-ftplugin*
+
+When opening a "*.notes" file, vim will source "<plugin/ftplugin/notes.vim"
+for us. The notable settings this imposes are:
+* Tabs are worth 2 spaces
+* Linewrap at 80 columns
+* Fold between the {{{ and }}} markers
+* Conceal is turned on
+  * URLs for links
+  * Stylistic directives like |notes-*|
+* Foldcolumn is turned on.
+* notes#init() is called to load all my notes-specific keybindings
+
+==============================================================================
+SYNTAX                                          *notes-syntax*
+
+                                                *notes-link*
+links                   I use markdown-style link syntax. [text](url)
+
+TODO
+I don't feel like describing this yet. Maybe later lol.
+* "Named folds" (foldmethod=marker) (and logs)
+* Markdown stylistic directives: *, **, |, and `
+* Banglist
+
+==============================================================================
+ABOUT                                           *notes-about*
+
+Get the latest version or report a bug on GitHub:
+
+https://github.com/arisweedler/vim-notes
+
+Hi Yash (and/or Austin) thanks for reading :')

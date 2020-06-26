@@ -1,3 +1,9 @@
+""""""""""""""""""""""""""""""" Include guard """""""""""""""""""""""""""""" {{{
+if exists('g:autoloaded_sweedlerNotes_banglist')
+  finish
+endif
+let g:autoloaded_sweedlerNotes_banglist = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""" banglist autoload """""""""""""""""""""""""""" {{{
 """""""""""""""""""""""""""""" banglist items """""""""""""""""""""""""""""" {{{
 let g:notes#banglist#pattern_start = '\* \<\zs'

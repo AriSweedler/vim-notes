@@ -38,7 +38,7 @@ syntax cluster notesLink contains=notesLinkText
 " THEN 0-width: zero-or-more of 'NOT ]'
 " THEN 0-width: Literal ](
 syntax region notesLinkText matchgroup=notesLinkTextDelimiter start=+\[\%(\_[^]]*](\)\@=+ matchgroup=notesLinkTextDelimiter end=+]+ nextgroup=notesLinkURL contains=@notesText
-syntax region notesLinkURL matchgroup=notesLinkTextDelimiter start=+(+ matchgroup=notesLinkTextDelimiter end=+\%()\|\_s\)+ contained containedin=NONE contains=@NoSpell conceal
+syntax region notesLinkURL matchgroup=notesLinkTextDelimiter start=+(+ matchgroup=notesLinkTextDelimiter skip=+\\[ ()]+ end=+\%()\|\_s\)+ contained containedin=NONE contains=@NoSpell conceal
 highlight link notesLinkTextDelimiter notesDelimiterHidden
 highlight link notesLinkText Underlined
 " }}}

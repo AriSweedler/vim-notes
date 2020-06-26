@@ -1,5 +1,9 @@
-"TODO open today's file
-"TODO open yesterday's file
+""""""""""""""""""""""""""""""" Include guard """""""""""""""""""""""""""""" {{{
+if exists('g:autoloaded_sweedlerNotes_yesterday')
+  finish
+endif
+let g:autoloaded_sweedlerNotes_yesterday = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""""""" Yesterday """""""""""""""""""""""""""""""" {{{
 """"""""""""""""""""""""""""""" Get file name """""""""""""""""""""""""""""" {{{
 function! notes#yesterday#getFileName(...)

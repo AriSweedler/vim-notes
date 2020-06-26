@@ -1,3 +1,10 @@
+""""""""""""""""""""""""""""""" Include guard """""""""""""""""""""""""""""" {{{
+if exists('g:autoloaded_sweedlerNotes_lib')
+  finish
+endif
+let g:autoloaded_sweedlerNotes_lib = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""""""" Cursor moved helper """"""""""""""""""""""""""" {{{
 " Helper function to check if the cursor has moved since the last invocation
 " of this function.
 let g:lib#prev_cur_pos = {}
@@ -9,8 +16,8 @@ function! lib#cursorUnmoved(tag)
   let g:lib#prev_cur_pos[a:tag] = getpos('.')
   return answer
 endfunction
-
-" Use colorcolumn to display the textwidth
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+""""""""""""""""" Use colorcolumn to display the textwidth """"""""""""""""" {{{
 function! lib#changeTextWidth(...)
   " If we have a v:count, then set the textwidth.
   if a:0 == 1
@@ -21,20 +28,22 @@ function! lib#changeTextWidth(...)
   " match the colorcolumn to the textwidth
   let &colorcolumn = (&textwidth)
 endfunction
-
-" Toggle syntax on or off
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""""" Toggle syntax on or off """"""""""""""""""""""""" {{{
 function! lib#toggleSyntax()
   let &syntax=(&syntax == "OFF") ? &filetype : "OFF"
 endfunction
-
-" remove trailing whitespace - https://vi.stackexchange.com/questions/454/
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""" remove trailing whitespace """""""""""""""""""""""" {{{
+" https://vi.stackexchange.com/questions/454/
 function! lib#removeTrailingWhitespace(range)
   let save_pos = getpos(".")
   let trailing = '\s\+$'
   execute 'keeppatterns ' . a:range . 'substitute/' . l:trailing . '//e'
   call setpos('.', save_pos)
 endfunction
-
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+""""""""""""""""""""""""" Left column info toggler """"""""""""""""""""""""" {{{
 let g:lib#showLeftColumns = 1
 function! lib#toggleLeftColumns()
   if g:lib#showLeftColumns
@@ -53,3 +62,4 @@ function! lib#toggleLeftColumns()
     set foldcolumn=2
   endif
 endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}

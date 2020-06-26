@@ -1,6 +1,9 @@
-" TODO:
-" 1) Add INCLUDE GUARDS where proper
-" 2) Add DOCS
+""""""""""""""""""""""""""""""" Include guard """""""""""""""""""""""""""""" {{{
+if exists('g:loaded_sweedlerNotes')
+  finish
+endif
+let g:loaded_sweedlerNotes = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""""""" notes autolaod """""""""""""""""""""""""""""" {{{
 """"""""""""""""""""""""""""" Initialize notes """"""""""""""""""""""""""""" {{{
 " This is where I put all my default kepmappings. If I wanted to make this a
@@ -13,14 +16,13 @@ function! notes#init()
   nnoremap ? :call notes#banglist#controller('DO', 'Backburner')<CR>
   nnoremap <Leader>? :call notes#banglist#toggle_backburner_highlight()<CR>
 
-  " Bring TODOs to today's file, delete DONE banglist items, open the Classes fold
-  nnoremap <Leader>T :call notes#getNamedFold('TODOs') <Bar> call notes#banglist#global('DONE', 'delete') <Bar> FoldOpen Classes<CR>
+  " Bring TODOs to today's file, delete DONE banglist items, open the TODOs fold
+  nnoremap <Leader>T :call notes#getNamedFold('TODOs') <Bar> call notes#banglist#global('DONE', 'delete') <Bar> FoldOpen TODOs<CR>
 
   command! TYesterday call notes#yesterday#openHelper('tabedit', 1)
   " Go to yesterday (<Leader>y) or tomorrow (<Leader>Y). Takes a count.
   nnoremap <Leader>y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
-  nnoremap <Leader>Y :<C-u>call notes#yesterday#openHelper('edit', -1*v:count)<CR>
-  nnoremap <Leader><Leader>y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
+  nnoremap <Leader>Y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
 
   " Give access to Today/Yesterday Commands to reset journal state
   command! NotesToday execute "edit " . system('tail -1 .daykeeper | tr -d "\n"') . ".*"
@@ -31,39 +33,36 @@ function! notes#init()
 
   " FoldOpen commands
   command! -nargs=1 FoldOpen let g:notes_foldo = <q-args> <Bar> keeppatterns silent g/\c^{\{3,3} <args>/normal zx
-  nnoremap <Leader><Leader>F :FoldOpen
-  nnoremap <Leader>FC :FoldOpen Classes<CR>
-  nnoremap <Leader>FV :FoldOpen Vim<CR>
   nnoremap <Leader>FT :FoldOpen TODOs<CR>
 
   " Change curly quotes into regular quotes and stuff
   command! FixPastedPDF keeppatterns call notes#fixPastedPDF()
 
   " Copy a link to a clipboard then invoke <C-k> to make a word say that
-  inoremap <C-k> <C-c>diWa[<C-r>"](<C-r>0)
-  nnoremap <C-k> diWa[<C-r>"](<C-r>0)
-  vnoremap <C-k> da[<C-r>"](<C-r>0)
+  inoremap <C-k> <C-c>"kdiWa[<C-r>k](<C-r>*)
+  nnoremap <C-k> "kdiWa[<C-r>k](<C-r>*)
+  vnoremap <C-k> "kda[<C-r>k](<C-r>*)
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""""""""" Links """""""""""""""""""""""""""""""""" {{{
 " Open the URL under cursor. Or the last link on the line
 " Links are of the form [title](URL)
-" TODO wtf is up with \_S and \_s both not working?? This is fucking retarded.
 function! notes#openLink()
   " Try to find link under cursor
-  echo "nice"
   let l:link_regex = '\[\_[^]]*](\([^)]*\))'
   let l:link = substitute(expand('<cWORD>'), l:link_regex, '\1', '')
-  echom l:link
-  echom expand('<cWORD>')
-  echom getline('.')
 
   " If no substitution is made, no link was found.
   " Try to find last link on the current line
   if l:link == expand('<cWORD>')
     echom "No link under cursor. Trying to open last link on this line"
-    let l:line_link_regex = '^.*' . l:link_regex . '.*$'
+    " TODO we don't really wanna capture ".*", as this could mess up with 2
+    " links on 1 line. We need to make sure we don't also capture the start of
+    " another link.
+    let l:line_link_regex = '^'. '.*' . '\[' . '\_[^]]*' . '](' . '\(.*\)' . ')' . '.*'
     let l:link = substitute(getline('.'), l:line_link_regex, '\1', '')
+    echom getline('.')
+    echom l:link
   endif
 
   " If no substitution is made, no link was found.
