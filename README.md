@@ -9,6 +9,10 @@ Install this as a 1-plugin package.
 
     git clone git@github.com:AriSweedler/vim-notes.git ~/.vim/pack/sweedler-notes
 
+And don't forget to install the helptags, also:
+
+    vim -u NONE -c "helptags ~/.vim/pack/sweedler-notes" -c q
+
 Haha that's literally it. Vim is pretty cool and so are you if you're
 installing my plugin.
 

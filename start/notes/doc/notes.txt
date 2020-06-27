@@ -14,7 +14,7 @@ https://github.com/AriSweedler/dotfiles/blob/master/.local/bin/notes.sh)
 MINDSET                                         *notes-mindset*
 
 I have a mental model of what note-taking should be. If you wanna use this
-plugin, subscribe to that. Use the bash script linked in *notes-plugin*
+plugin, subscribe to that. Use the bash script linked in |notes-plugin|
 
 The script does 2 important things:
 1. cd's to the |notes-home-directory|, and logs entries in .daykeeper (see
@@ -225,7 +225,7 @@ SYNTAX                                          *notes-syntax*
                                                 *notes-link*
 links                   I use markdown-style link syntax. [text](url)
 
-TODO
+ TODO
 I don't feel like describing this yet. Maybe later lol.
 * "Named folds" (foldmethod=marker) (and logs)
 * Markdown stylistic directives: *, **, |, and `
