@@ -5,13 +5,12 @@ It's contrived ahaha. But it's also the best.
 
 
 # Installation
-Install this as a 1-plugin package.
+Install this using vim's built-in package support:
 
-    git clone git@github.com:AriSweedler/vim-notes.git ~/.vim/pack/sweedler-notes
-
-And don't forget to install the helptags, also:
-
-    vim -u NONE -c "helptags ~/.vim/pack/sweedler-notes" -c q
+    mkdir -p ~/.vim/pack/AriSweedler/start
+    cd ~/.vim/pack/AriSweedler/start
+    git clone git@github.com:AriSweedler/vim-notes.git notes
+    vim -u NONE -c "helptags notes/doc" -c q
 
 Haha that's literally it. Vim is pretty cool and so are you if you're
 installing my plugin.
@@ -25,7 +24,5 @@ homes. And it's a variable in the bash script anyway.
 
 TODO for Ari: Do I want to absorb the functionality of the bash script into
 this vim plugin? That would make it purer, but just be taking a hammer to as
-crew ahaha.
-
-Should I add the bash script to this repo? That's kinda dumb. But I like the
-concept of packaging this...
+crew ahaha. Should I just add the bash script to this repo? That's kinda dumb.
+But I like the concept of packaging this...
