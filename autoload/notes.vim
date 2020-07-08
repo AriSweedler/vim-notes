@@ -9,11 +9,17 @@ let g:loaded_sweedlerNotes = 1
 " This is where I put all my default kepmappings. If I wanted to make this a
 " real plugin, I would check to make sure I'm not overriding stuff first
 function! notes#init()
-  " Remap <bang> to mark or toggle DO/DONE
-  nnoremap 1 :unlet g:lib#prev_cur_pos['banglist']<CR>
-  nnoremap ! :call notes#banglist#controller()<CR>
-  nnoremap <Leader>! :call notes#banglist#controller('DO')<CR>
+  " I finished something! == '!'
+  nnoremap ! :call notes#banglist#controller('DO', 'DONE')<CR>
+  " Not sure how to do this one ==> '?'
   nnoremap ? :call notes#banglist#controller('DO', 'Backburner')<CR>
+  " I want to add work to my plate ==> '+'
+  nnoremap + :call notes#banglist#controller('Backburner', 'DO')<CR>
+
+  " Break sequences
+  nnoremap _ :unlet g:lib#prev_cur_pos['banglist']<CR>
+  " Find the next DO
+  nnoremap <Leader>! :call notes#banglist#controller('DO')<CR>
   nnoremap <Leader>? :call notes#banglist#toggle_backburner_highlight()<CR>
 
   " Bring TODOs to today's file, delete DONE banglist items, open the TODOs fold
@@ -29,7 +35,8 @@ function! notes#init()
   command! NotesYesterday execute "edit " . system('tail -2 .daykeeper | head -1 | tr -d "\n"') . ".*"
 
   " Remap gx to my improved(?) function
-  nnoremap gx :call notes#openLink()<CR>
+  nnoremap gx :call notes#openLink("open")<CR>
+  nnoremap gX :call notes#openLink("yank")<CR>
 
   " FoldOpen commands
   command! -nargs=1 FoldOpen let g:notes_foldo = <q-args> <Bar> keeppatterns silent g/\c^{\{3,3} <args>/normal zx
@@ -47,7 +54,7 @@ endfunction
 """"""""""""""""""""""""""""""""""" Links """""""""""""""""""""""""""""""""" {{{
 " Open the URL under cursor. Or the last link on the line
 " Links are of the form [title](URL)
-function! notes#openLink()
+function! notes#openLink(arg)
   " Try to find link under cursor
   let l:link_regex = '\[\_[^]]*](\([^)]*\))'
   let l:link = substitute(expand('<cWORD>'), l:link_regex, '\1', '')
@@ -55,14 +62,9 @@ function! notes#openLink()
   " If no substitution is made, no link was found.
   " Try to find last link on the current line
   if l:link == expand('<cWORD>')
-    echom "No link under cursor. Trying to open last link on this line"
-    " TODO we don't really wanna capture ".*", as this could mess up with 2
-    " links on 1 line. We need to make sure we don't also capture the start of
-    " another link.
-    let l:line_link_regex = '^'. '.*' . '\[' . '\_[^]]*' . '](' . '\(.*\)' . ')' . '.*'
+    "echo "No link under cursor. Trying to open last link on this line"
+    let l:line_link_regex = '^'. '.*' . '\[' . '\_[^]]*' . '](' . '\([^[]*\)' . ')' . '.*'
     let l:link = substitute(getline('.'), l:line_link_regex, '\1', '')
-    echom getline('.')
-    echom l:link
   endif
 
   " If no substitution is made, no link was found.
@@ -71,7 +73,12 @@ function! notes#openLink()
     return
   endif
 
-  execute '!open "' . l:link . '"'
+  if a:arg == "open"
+    execute '!open "' . l:link . '"'
+  elseif a:arg == "yank"
+    call setreg('*', l:link)
+    echom "'" . l:link . "' placed on clipboard"
+  endif
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""" Copy Named Folds """"""""""""""""""""""""""""" {{{

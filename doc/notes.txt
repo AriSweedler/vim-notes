@@ -66,7 +66,7 @@ Mappings have been provided to operate on banglist keywords (ignoring the
 actual text the banglist lines contain). Invoking a command twice without
 moving the cursor causes the command to do something slightly different. See
 |notes_!| for an example. To override this default sequential behavior, use
-|notes_1|.
+|notes__|.
 
 Banglist Keywords ~                             *banglist-keywords*
 
@@ -106,8 +106,8 @@ Invoke |notes_!| again, and the sequential operation will happen. The
   * DONE Task2
   * Backburner Task3
 
-                                                *notes_1*
-1                       Break a banglist sequence. Literally a useless
+                                                *notes__*
+_                       Break a banglist sequence. Literally a useless
                         command, you can just hit any movement command. But
                         come one!! That would be lazy. We gotta write an
                         explicit way to do nothing.
@@ -125,13 +125,12 @@ You will get:
   * DO Task2
   * Backburner Task3
 
-Invoke |notes_1| to break the sequence. Then, when you invoke |notes_!| again,
+Invoke |notes__| to break the sequence. Then, when you invoke |notes_!| again,
 you start a new sequence. You will get:
 
   * DONE Task1
   * DONE Task2
   * Backburner Task3
-
 
                                                 *notes_?*
 ?                       Turn the next |banglist-DO| into a

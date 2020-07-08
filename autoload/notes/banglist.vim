@@ -49,6 +49,7 @@ endfunction
 " With 2 arguments, sub src for dst. (if unmoved, slide instead of sub)
 function! notes#banglist#controller(...)
   let l:unmoved = lib#cursorUnmoved('banglist')
+  let l:should_slide = l:unmoved
 
   if a:0 == 0
     if ! l:unmoved
@@ -63,12 +64,15 @@ function! notes#banglist#controller(...)
     let g:notes#banglist#src = a:1
     let g:notes#banglist#dst = a:1
   else
+    " If we've not moved but changed the arguments, then it's a new sequence
+    if g:notes#banglist#src != a:1 || g:notes#banglist#dst != a:2
+      let l:should_slide = 0
+    endif
     let g:notes#banglist#src = a:1
     let g:notes#banglist#dst = a:2
   endif
 
   " If cursor is unmoved between invocations, slide instead of sub
-  let l:should_slide = l:unmoved
   call notes#banglist#subslide(l:should_slide, g:notes#banglist#src, g:notes#banglist#dst)
 
   " Open folds if needed
