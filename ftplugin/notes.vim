@@ -9,9 +9,9 @@ call lib#changeTextWidth(80)
 setlocal foldmethod=marker foldmarker={{{,}}}
 setlocal foldlevel=1
 
-" For bulleted lists
+" For bulleted lists (and blockquotes)
 setlocal autoindent
-setlocal comments=fb:*
+setlocal comments=fb:*,b:>
 setlocal formatoptions=tcqj
 setlocal formatlistpat=^\\s*[-*+]\\s\\+\\ze\\S
 

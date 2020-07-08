@@ -37,18 +37,17 @@ syntax cluster notesLink contains=notesLinkText
 " Literal [
 " THEN 0-width: zero-or-more of 'NOT ]'
 " THEN 0-width: Literal ](
-syntax region notesLinkText matchgroup=notesLinkTextDelimiter start=+\[\%(\_[^]]*](\)\@=+ matchgroup=notesLinkTextDelimiter end=+]+ nextgroup=notesLinkURL contains=@notesText
+syntax region notesLinkText matchgroup=notesLinkTextDelimiter start=+\[\%(\_[^]]*](\)\@=+ matchgroup=notesLinkTextDelimiter end=+]+ nextgroup=notesLinkURL contains=@notesWeightedText
 syntax region notesLinkURL matchgroup=notesLinkTextDelimiter start=+(+ matchgroup=notesLinkTextDelimiter skip=+\\[ ()]+ end=+\%()\|\_s\)+ contained containedin=NONE contains=@NoSpell conceal
 highlight link notesLinkTextDelimiter notesDelimiterHidden
 highlight link notesLinkText Underlined
 " }}}
 " {{{ Priority for notesListMarker
-syntax region notesListItem transparent matchgroup=notesListMarker start="^\s*[-*+]\%(\s\S\)\@=" end="$" keepend contains=@notesText
+syntax match notesListMarker /^\s*[-*+] \%(\S\)\@=/ nextgroup=@notesBangList
 highlight link notesListMarker notesBullet
 
-" Special items in the list
-syntax cluster notesBangList contains=@notesListItem,@notesBangListSpecialItems
-syntax cluster notesBangListSpecialItems contains=notesBangListDO,notesBangListDONE,notesBangListBackburner
+" Special items to define a bullet as a BangList item
+syntax cluster notesBangList contains=notesBangListDO,notesBangListDONE,notesBangListBackburner
 syntax region notesBangListDO start=/DO\>/ end=/!$/ oneline contains=@NoSpell,@notesText contained
 syntax region notesBangListDONE start=/DONE\>/ end=/!$/ oneline contains=@NoSpell,@notesText contained
 syntax region notesBangListBackburner start=/Backburner\>/ end=/!$/ oneline contains=@NoSpell,@notesText contained
@@ -73,7 +72,15 @@ highlight notesBar cterm=underline ctermfg=20
 highlight notesItalicDelimiter ctermfg=22
 highlight notesBoldDelimiter ctermfg=27
 " }}}
-syntax cluster notesText contains=@notesBangListSpecialItems,@notesLink,@notesWeightedText
+" {{{ Codeblocks and blockquotes
+syntax region notesCodeblockLiteral matchgroup=Normal start=" \{4}" end="$"
+syntax region notesBlockquote matchgroup=notesBlockquoteDelimiter start="^> " end="$" contains=@notesText
+
+highlight link notesCodeblockLiteral notesCodeLiteral
+highlight notesBlockquote ctermfg=247
+highlight notesBlockquoteDelimiter ctermfg=34
+" }}}
+syntax cluster notesText contains=@notesListMarker,@notesLink,@notesWeightedText
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""}}}
 """"""""""""""" Colorscheme (give colors to the linked groups) """"""""""""{{{
 highlight notesHeader term=bold ctermfg=5
@@ -90,6 +97,4 @@ highlight notesDelimiterStandout ctermfg=5
 highlight notesLinkURL ctermfg=91
 highlight link notesCodeLiteralDelimiter notesDelimiterStandout
 highlight link notesBarDelimiter notesDelimiterHidden
-
-" TODO 22 is a beautiful green color. Can I use it somewhere?
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""}}}
