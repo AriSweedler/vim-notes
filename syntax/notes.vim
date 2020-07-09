@@ -8,7 +8,7 @@ endif
 syntax match notesNamedFoldStart +^{{{+ nextgroup=notesNamedFoldHeader,notesLogStart
 syntax match notesNamedFoldHeader +[^!]*+ contained containedin=NONE contains=@NoSpell
 " {{{ fold-marker is not as good as fold-syntax when the marker is data :c
-syntax region notesNamedFoldBodyNospell start=+!@+ matchgroup=notesNamedFoldEnd end=+^}}}+ contains=@NoSpell
+syntax region notesNamedFoldBodyNospell start=+!@+ matchgroup=notesNamedFoldEnd end=+^}}}+ contains=@NoSpell,@notesText
 syntax match notesNamedFoldEnd +^}}}+
 
 highlight link notesNamedFoldStart notesNamedFoldBracket
@@ -62,7 +62,7 @@ syntax region notesBold matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@=" mat
 syntax region notesCodeLiteral matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contains=@NoSpell
 syntax region notesBar matchgroup=notesBarDelimiter start="|\%(\S\)\@=" matchgroup=notesBarDelimiter end="\%(\S\)\@<=|" keepend concealends contains=@NoSpell
 syntax cluster notesWeightedTextDelimiter contains=notesItalicDelimiter,notesBoldDelimiter,notesCodeLiteralDelimiter,notesBarDelimiter
-syntax cluster notesWeightedText contains=notesItalic,notesBold,notesCodeLiteral,notesBar,@notesWeightedTextDelimiter
+syntax cluster notesWeightedText contains=notesItalic,notesBold,notesCodeLiteral,notesBar,@notesWeightedTextDelimiter,notesTodo
 
 highlight notesItalic cterm=italic
 highlight notesBold cterm=bold
@@ -76,13 +76,14 @@ highlight notesBoldDelimiter ctermfg=27
 syntax region notesCodeblockRegion start="^$\n\%( \{4}\)" end="^\%( \{4}\)\@!" contains=notesCodeblockLiteral keepend
 syntax match notesCodeblockLiteral /^\%( \{4}\).*$/ms=s+4 contains=@NoSpell contained
 syntax region notesBlockquote matchgroup=notesBlockquoteDelimiter start="^> " end="$" contains=@notesText
+syntax cluster notesBlocks contains=notesCodeblockRegion,notesBlockquote
 
 highlight link notesCodeblockRegion Normal
 highlight link notesCodeblockLiteral notesCodeLiteral
 highlight notesBlockquote ctermfg=247
 highlight notesBlockquoteDelimiter ctermfg=34
 " }}}
-syntax cluster notesText contains=@notesListMarker,@notesLink,@notesWeightedText
+syntax cluster notesText contains=notesListMarker,@notesLink,@notesWeightedText,@notesBlocks
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""}}}
 """"""""""""""" Colorscheme (give colors to the linked groups) """"""""""""{{{
 highlight notesHeader term=bold ctermfg=5

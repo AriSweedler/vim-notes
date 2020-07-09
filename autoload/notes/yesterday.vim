@@ -16,7 +16,7 @@ function! notes#yesterday#getFileName(...)
   " Take the n'th line from the end in our .daykeeper file
 
   " Get the line number in the daykeeper file for today's file
-  let filename = expand("%:.:r")->substitute("/", "\\\\/", "")
+  let filename = expand("%:.:r")->substitute("/", "\\\\/", "g")
   let line_number = system('sed -n "/' . l:filename . '/=" .daykeeper')
   let desired_line_number = l:line_number - l:days_ago
 
