@@ -73,9 +73,11 @@ highlight notesItalicDelimiter ctermfg=22
 highlight notesBoldDelimiter ctermfg=27
 " }}}
 " {{{ Codeblocks and blockquotes
-syntax region notesCodeblockLiteral matchgroup=Normal start=" \{4}" end="$"
+syntax region notesCodeblockRegion start="^$\n\%( \{4}\)" end="^\%( \{4}\)\@!" contains=notesCodeblockLiteral keepend
+syntax match notesCodeblockLiteral /^\%( \{4}\).*$/ms=s+4 contains=@NoSpell contained
 syntax region notesBlockquote matchgroup=notesBlockquoteDelimiter start="^> " end="$" contains=@notesText
 
+highlight link notesCodeblockRegion Normal
 highlight link notesCodeblockLiteral notesCodeLiteral
 highlight notesBlockquote ctermfg=247
 highlight notesBlockquoteDelimiter ctermfg=34
