@@ -31,6 +31,10 @@ syntax case ignore
 syntax keyword notesTodo TODO
 syntax case match
 " }}}
+" {{{ Define the horizontal rule
+syntax match notesHorizontalRule /^===$/
+highlight link notesHorizontalRule notesBullet
+" }}}
 " {{{ Links
 "TODO rewrite this guy so we can have a top-level link object with 2 kids - text and URL
 syntax cluster notesLink contains=notesLinkText
@@ -83,7 +87,7 @@ highlight link notesCodeblockLiteral notesCodeLiteral
 highlight notesBlockquote ctermfg=247
 highlight notesBlockquoteDelimiter ctermfg=34
 " }}}
-syntax cluster notesText contains=notesListMarker,@notesLink,@notesWeightedText,@notesBlocks
+syntax cluster notesText contains=notesListMarker,notesHorizontalRule,@notesLink,@notesWeightedText
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""}}}
 """"""""""""""" Colorscheme (give colors to the linked groups) """"""""""""{{{
 highlight notesHeader term=bold ctermfg=5
