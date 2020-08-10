@@ -48,7 +48,9 @@ highlight link notesLinkText Underlined
 " }}}
 " {{{ Priority for notesListMarker
 syntax match notesListMarker /^\s*[-*+] \%(\S\)\@=/ nextgroup=@notesBangList
+syntax match notesListNumber /^\s*\d\+[.):-] \%(\S\)\@=/
 highlight link notesListMarker notesBullet
+highlight link notesListNumber notesBullet
 
 " Special items to define a bullet as a BangList item
 syntax cluster notesBangList contains=notesBangListDO,notesBangListDONE,notesBangListBackburner
