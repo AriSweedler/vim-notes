@@ -27,12 +27,16 @@ function! notes#init()
 
   command! TYesterday call notes#yesterday#openHelper('tabedit', 1)
   " Go to yesterday (<Leader>y) or tomorrow (<Leader>Y). Takes a count.
+  nnoremap [y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
+  nnoremap ]y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
+  " Trying out using brackets instead of leader/capitalization
   nnoremap <Leader>y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
   nnoremap <Leader>Y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
 
-  " Give access to Today/Yesterday Commands to reset journal state
-  command! NotesToday execute "edit " . system('tail -1 .daykeeper | tr -d "\n"') . ".*"
-  command! NotesYesterday execute "edit " . system('tail -2 .daykeeper | head -1 | tr -d "\n"') . ".*"
+  " Reset journal state when changing days
+  command! Notes only <Bar> NotesToday <Bar> vsplit <Bar> NotesYesterday <Bar> wincmd h
+  command! -bar NotesToday execute "edit " . system('tail -1 .daykeeper | tr -d "\n"') . ".*"
+  command! -bar NotesYesterday execute "edit " . system('tail -2 .daykeeper | head -1 | tr -d "\n"') . ".*"
 
   " Remap gx to my improved(?) function
   nnoremap gx :call notes#openLink("open")<CR>
@@ -88,7 +92,7 @@ function! notes#getNamedFold(pattern)
   " Open folds in the other window so we can use `Va{` as intended
   let l:saved_foldlevel = &foldlevel
   let &foldlevel = 10
-  execute 'silent keeppatterns global/^{\{3,3} ' . a:pattern . '/normal Va{"0y'
+  execute 'silent keeppatterns global/^{\{3,3} ' . a:pattern . '/normal! Va{"0y'
   let &foldlevel = l:saved_foldlevel
   execute 'wincmd w'
   .put 0

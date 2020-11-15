@@ -37,7 +37,8 @@ function! notes#banglist#subslide(slide, src, dst)
   endif
 
   call search(l:src_pat)
-  normal zx
+  " Do we wanna close other folds here? Only if we opened them ourselves...
+  " normal zx
   execute "substitute/" . l:src_pat . "/" . a:dst . "/e"
   call search(l:dst_pat)
 endfunction
