@@ -38,51 +38,12 @@ function! notes#init()
   command! -bar NotesToday execute "edit " . system('tail -1 .daykeeper | tr -d "\n"') . ".*"
   command! -bar NotesYesterday execute "edit " . system('tail -2 .daykeeper | head -1 | tr -d "\n"') . ".*"
 
-  " Remap gx to my improved(?) function
-  nnoremap gx :call notes#openLink("open")<CR>
-  nnoremap gX :call notes#openLink("yank")<CR>
-
   " FoldOpen commands
   command! -nargs=1 FoldOpen let g:notes_foldo = <q-args> <Bar> keeppatterns silent g/\c^{\{3,3} <args>/normal zx
   nnoremap <Leader>FT :FoldOpen TODOs<CR>
 
   " Change curly quotes into regular quotes and stuff
   command! FixPastedPDF keeppatterns call notes#fixPastedPDF()
-
-  " Copy a link to a clipboard then invoke <C-k> to make a word say that
-  inoremap <C-k> <C-c>"kdiWa[<C-r>k](<C-r>*)
-  nnoremap <C-k> "kdiWa[<C-r>k](<C-r>*)
-  vnoremap <C-k> "kda[<C-r>k](<C-r>*)
-endfunction
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
-""""""""""""""""""""""""""""""""""" Links """""""""""""""""""""""""""""""""" {{{
-" Open the URL under cursor. Or the last link on the line
-" Links are of the form [title](URL)
-function! notes#openLink(arg)
-  " Try to find link under cursor
-  let l:link_regex = '\[\_[^]]*](\([^)]*\))'
-  let l:link = substitute(expand('<cWORD>'), l:link_regex, '\1', '')
-
-  " If no substitution is made, no link was found.
-  " Try to find last link on the current line
-  if l:link == expand('<cWORD>')
-    "echo "No link under cursor. Trying to open last link on this line"
-    let l:line_link_regex = '^'. '.*' . '\[' . '\_[^]]*' . '](' . '\([^[]*\)' . ')' . '.*'
-    let l:link = substitute(getline('.'), l:line_link_regex, '\1', '')
-  endif
-
-  " If no substitution is made, no link was found.
-  if l:link == getline('.')
-    echom "ERROR: No link found on this line. Giving up"
-    return
-  endif
-
-  if a:arg == "open"
-    execute '!open "' . l:link . '"'
-  elseif a:arg == "yank"
-    call setreg('*', l:link)
-    echom "'" . l:link . "' placed on clipboard"
-  endif
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""" Copy Named Folds """"""""""""""""""""""""""""" {{{
