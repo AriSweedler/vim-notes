@@ -32,14 +32,14 @@ function! notes#banglist#subslide(slide, src, dst)
 
   if a:slide
     " Undo the substitution on this line and go to the next pattern
-    execute "substitute/" . l:dst_pat . "/" . a:src . "/e"
+    execute "substitute/" . l:dst_pat . "/" . a:src . "/e 1"
     normal $
   endif
 
   call search(l:src_pat)
   " Do we wanna close other folds here? Only if we opened them ourselves...
   " normal zx
-  execute "substitute/" . l:src_pat . "/" . a:dst . "/e"
+  execute "substitute/" . l:src_pat . "/" . a:dst . "/e 1"
   call search(l:dst_pat)
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}

@@ -66,6 +66,7 @@ function! notes#fixPastedPDF()
   %substitute/â/'/e
   %substitute/â/"/e
   %substitute/â/"/e
+  %substitute/â¦/.../e
   %substitute/â¢/*/e
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
