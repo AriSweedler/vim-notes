@@ -54,8 +54,8 @@ highlight link notesListNumber notesBullet
 
 " Special items to define a bullet as a BangList item
 syntax cluster notesBangList contains=notesBangListDO,notesBangListDONE,notesBangListBackburner
-syntax region notesBangListDO start=/DO\>/ end=/!$/ oneline contains=@NoSpell,@notesText contained
-syntax region notesBangListDONE start=/DONE\>/ end=/!$/ oneline contains=@NoSpell,@notesText contained
+syntax region notesBangListDO start=/DO\>/ end=/!$/ oneline contains=@NoSpell,@notesTextUnweighted,@notesTextWeightedDO contained
+syntax region notesBangListDONE start=/DONE\>/ end=/!$/ oneline contains=@NoSpell,@notesTextUnweighted,@notesTextWeightedDONE contained
 syntax region notesBangListBackburner start=/Backburner\>/ end=/!$/ oneline contains=@NoSpell,@notesText contained
 
 highlight link notesBangListDO notesDO
@@ -64,16 +64,33 @@ highlight link notesBangListBackburner notesBackburner
 " }}}
 " {{{ Italics/Bold/literals
 syntax region notesItalic matchgroup=notesItalicDelimiter start="\*\%(\S\)\@=" matchgroup=notesItalicDelimiter end="\%(\S\)\@<=\*" keepend concealends
+syntax region notesItalicDO matchgroup=notesItalicDelimiter start="\*\%(\S\)\@=" matchgroup=notesItalicDelimiter end="\%(\S\)\@<=\*" keepend concealends contained containedin=notesBangListDO
+syntax region notesItalicDONE matchgroup=notesItalicDelimiter start="\*\%(\S\)\@=" matchgroup=notesItalicDelimiter end="\%(\S\)\@<=\*" keepend concealends contained containedin=notesBangListDONE
+
 syntax region notesBold matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@=" matchgroup=notesBoldDelimiter end="\%(\S\)\@<=\*\*" keepend concealends
+syntax region notesBoldDO matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@=" matchgroup=notesBoldDelimiter end="\%(\S\)\@<=\*\*" keepend concealends contained containedin=notesBangListDO
+syntax region notesBoldDONE matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@=" matchgroup=notesBoldDelimiter end="\%(\S\)\@<=\*\*" keepend concealends contained containedin=notesBangListDONE
+
 syntax region notesCodeLiteral matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contains=@NoSpell
-"syntax region notesBar matchgroup=notesBarDelimiter start="|\%(\S\)\@=" matchgroup=notesBarDelimiter end="\%(\S\)\@<=|" keepend concealends contains=@NoSpell
+syntax region notesCodeLiteralDO matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDO contains=@NoSpell
+syntax region notesCodeLiteralDONE matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDONE contains=@NoSpell
+
 syntax cluster notesWeightedTextDelimiter contains=notesItalicDelimiter,notesBoldDelimiter,notesCodeLiteralDelimiter,notesBarDelimiter
-syntax cluster notesWeightedText contains=notesItalic,notesBold,notesCodeLiteral,notesBar,@notesWeightedTextDelimiter,notesTodo
+syntax cluster notesWeightedText contains=notesItalic,notesBold,notesCodeLiteral,@notesWeightedTextDelimiter,notesTodo
+syntax cluster notesTextWeightedDO contains=notesItalicDO,notesBoldDO,notesCodeLiteralDO,@notesWeightedTextDelimiter,notesTodo
+syntax cluster notesTextWeightedDONE contains=notesItalicDONE,notesBoldDONE,notesCodeLiteralDONE,@notesWeightedTextDelimiter,notesTodo
 
 highlight notesItalic cterm=italic
+highlight notesItalicDO cterm=italic ctermfg=10
+highlight notesItalicDONE cterm=italic ctermfg=23
+
 highlight notesBold cterm=bold
+highlight notesBoldDO cterm=bold ctermfg=10
+highlight notesBoldDONE cterm=bold ctermfg=23
+
 highlight notesCodeLiteral ctermbg=240
-highlight notesBar cterm=underline ctermfg=20
+highlight notesCodeLiteralDO ctermbg=240 ctermfg=10
+highlight notesCodeLiteralDONE ctermbg=240 ctermfg=32
 
 highlight notesItalicDelimiter ctermfg=22
 highlight notesBoldDelimiter ctermfg=27
@@ -89,6 +106,7 @@ highlight link notesCodeblockLiteral notesCodeLiteral
 highlight notesBlockquote ctermfg=247
 highlight notesBlockquoteDelimiter ctermfg=34
 " }}}
+syntax cluster notesTextUnweighted contains=notesListMarker,notesHorizontalRule,@notesLink
 syntax cluster notesText contains=notesListMarker,notesHorizontalRule,@notesLink,@notesWeightedText
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""}}}
 """"""""""""""" Colorscheme (give colors to the linked groups) """"""""""""{{{
