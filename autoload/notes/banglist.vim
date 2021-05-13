@@ -1,86 +1,98 @@
-""""""""""""""""""""""""""""""" Include guard """""""""""""""""""""""""""""" {{{
-if exists('g:autoloaded_sweedlerNotes_banglist')
-  finish
-endif
-let g:autoloaded_sweedlerNotes_banglist = 1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""""""""""" Include guard """""""""""""""""""""""""""""" {{{
+"if exists('g:autoloaded_sweedlerNotes_banglist')
+"  finish
+"endif
+"let g:autoloaded_sweedlerNotes_banglist = 1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""" banglist autoload """""""""""""""""""""""""""" {{{
-"""""""""""""""""""""""""""""" banglist items """""""""""""""""""""""""""""" {{{
+""""""""""""""""""""""""""" useful script globals """""""""""""""""""""""""" {{{
 let g:notes#banglist#pattern_start = '\* \<\zs'
 let g:notes#banglist#pattern_end = '\ze\>.*!'
 " Returns a regex to select for banglist items. Of the form
 " "\* \<\zsITEM\ze\>.*!" instead of just "ITEM".
-function! notes#banglist#item(name)
+function! notes#banglist#pat(name)
   return g:notes#banglist#pattern_start . a:name . g:notes#banglist#pattern_end
+endfunction
+let s:should_slide = 0
+let s:src_word = ''
+let s:dst_word = ''
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+""""""""""""""""""""""""""""""""""" bang """"""""""""""""""""""""""""""""""" {{{
+function! notes#banglist#bang()
+  let l:unmoved = lib#cursorUnmoved('banglist')
+  let l:prev_action = (s:src_word != '')
+
+  " Set up the cache properly
+  let s:should_slide = l:unmoved && l:prev_action
+  if ! l:prev_action
+    let s:src_word = 'DO'
+    let s:dst_word = 'DONE'
+  endif
+
+  " Execute the action
+  call notes#banglist#subslide(s:should_slide, s:src_word, s:dst_word)
+endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""""" Any non_bang movement """"""""""""""""""""""""" {{{
+function! notes#banglist#non_bang(src_w, dst_w)
+  let l:unmoved = lib#cursorUnmoved('banglist')
+
+  " Set up the cache properly
+  let s:src_word = a:src_w
+  let s:dst_word = a:dst_w
+  let s:should_slide = l:unmoved
+
+  " Execute the action
+  call notes#banglist#subslide(s:should_slide, s:src_word, s:dst_word)
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""""""" subslide """"""""""""""""""""""""""""""""" {{{
-let g:notes#banglist#src = 'DO'
-let g:notes#banglist#dst = 'DONE'
 " Finds the next line containing src and changes it to dst. If 'slide' is set to
 " true, first changes this line from dst to src.
 "
-" TODO WHY DOES INVOKING ON THE BEGINNING OF PATTERN FAIL?
+" TODO why does this fail iff we're at the start of a pattern? I don't get it.
+" Shouldn't the `normal 0` fix that?? I don't know what action is happening.
 function! notes#banglist#subslide(slide, src, dst)
-  " Convenience variables
-  let l:src_pat = notes#banglist#item(a:src)
-  let l:dst_pat = notes#banglist#item(a:dst)
+  " Set up pattern variables
+  let l:src_pat = notes#banglist#pat(a:src)
+  let l:dst_pat = notes#banglist#pat(a:dst)
 
   " Move to the start of the line before executing forward search, so
   " invocations work linewise isntead of characterwise
   normal 0
 
+  " If this action is a slide, then undo the substitution on this line. Move
+  " past it so the next search doesn't capture this new src pattern
   if a:slide
-    " Undo the substitution on this line and go to the next pattern
     execute "substitute/" . l:dst_pat . "/" . a:src . "/e 1"
     normal $
   endif
 
+  " Find the next pattern, substiture it, then move the cursor nicely
   call search(l:src_pat)
-  " Do we wanna close other folds here? Only if we opened them ourselves...
-  " normal zx
   execute "substitute/" . l:src_pat . "/" . a:dst . "/e 1"
   call search(l:dst_pat)
+
+  " We know that we've moved at this point. But the next time we check we
+  " wanna see if we've moved from here.
+  let _ = lib#cursorUnmoved('banglist')
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
-"""""""""""""""""""""""""""" banglist controller """"""""""""""""""""""""""" {{{
-" Wrapper function to call banglist. Tracks cursor movement & opens folds
-" With 0 arguments, repeat last sequence (or start a DO/DONE)
-" With 1 argument, just find.
-" With 2 arguments, sub src for dst. (if unmoved, slide instead of sub)
-function! notes#banglist#controller(...)
-  let l:unmoved = lib#cursorUnmoved('banglist')
-  let l:should_slide = l:unmoved
-
-  if a:0 == 0
-    if ! l:unmoved
-      " No arguments, but we have moved. Interpret this as a new sequence of
-      " changing DO ==> DONE
-      let g:notes#banglist#src = 'DO'
-      let g:notes#banglist#dst = 'DONE'
-    endif
-    " No arguments, and we have not moved. Use the same src/dst as last time.
-  elseif a:0 == 1
-    " subslide with identical arguments acts like search. Sloppy but w/e lol
-    let g:notes#banglist#src = a:1
-    let g:notes#banglist#dst = a:1
-  else
-    " If we've not moved but changed the arguments, then it's a new sequence
-    if g:notes#banglist#src != a:1 || g:notes#banglist#dst != a:2
-      let l:should_slide = 0
-    endif
-    let g:notes#banglist#src = a:1
-    let g:notes#banglist#dst = a:2
-  endif
-
-  " If cursor is unmoved between invocations, slide instead of sub
-  call notes#banglist#subslide(l:should_slide, g:notes#banglist#src, g:notes#banglist#dst)
-
-  " Open folds if needed
-  silent! normal! zO
-
-  " Invoke CursorUnmoved to set the "unmoved cursor position"
-  call lib#cursorUnmoved('banglist')
+""""""""""""""""""""""""""""""""""" reset """""""""""""""""""""""""""""""""" {{{
+function! notes#banglist#reset()
+  " Clear all state
+  unlet g:lib#prev_cur_pos['banglist']
+  let s:src_word = ''
+  let s:dst_word = ''
+endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""""""""""""" search """""""""""""""""""""""""""""""""" {{{
+function! notes#banglist#search(word, direction)
+  let l:search_flags = a:direction == 'backward' ? '' : 'b'
+  let l:pat = notes#banglist#pat(a:word)
+  call search(l:pat, l:search_flags)
+  " Open folds if need be
+  normal zx
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""" backburner highlight """"""""""""""""""""""""""" {{{

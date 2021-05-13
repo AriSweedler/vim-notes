@@ -8,24 +8,13 @@ endif
 syntax match notesNamedFoldStart +^{{{+ nextgroup=notesNamedFoldHeader,notesLogStart
 syntax match notesNamedFoldHeader +[^!]*+ contained containedin=NONE contains=@NoSpell
 " {{{ fold-marker is not as good as fold-syntax when the marker is data :c
-syntax region notesNamedFoldBodyNospell start=+!@+ matchgroup=notesNamedFoldEnd end=+^}}}+ contains=@NoSpell,@notesText
+syntax region notesNamedFoldBodyNospell start=+!@+ matchgroup=notesNamedFoldEnd end=+^[{}]\{3}+me=s-1 contains=@NoSpell,@notesText,notesNamedFoldStart
 syntax match notesNamedFoldEnd +^}}}+
 
 highlight link notesNamedFoldStart notesNamedFoldBracket
 highlight link notesNamedFoldHeader notesHeader
 highlight link notesNamedFoldEnd notesNamedFoldBracket
 " }}}
-" {{{Log header
-syntax match notesLogStart + {[^:]*+ contained containedin=NONE nextgroup=notesLogDescription
-syntax keyword notesLogType Blog Book Chore Drug Movie Workout Video contained containedin=notesLogStart
-syntax match notesLogDescription +[^}]*+ contained containedin=NONE nextgroup=notesLogEnd contains=@NoSpell
-syntax match notesLogEnd +}+ contained containedin=NONE
-
-highlight link notesLogStart notesLogBrackets
-highlight link notesLogType notesHeader
-highlight link notesLogDescription notesSubheader
-highlight link notesLogEnd notesLogBrackets
-"}}}
 " {{{ Define the "TODO" keyword
 syntax case ignore
 syntax keyword notesTodo TODO

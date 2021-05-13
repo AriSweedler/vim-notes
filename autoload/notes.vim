@@ -9,19 +9,24 @@ let g:loaded_sweedlerNotes = 1
 " This is where I put all my default kepmappings. If I wanted to make this a
 " real plugin, I would check to make sure I'm not overriding stuff first
 function! notes#init()
-  " I finished something! == '!'
-  nnoremap ! :call notes#banglist#controller('DO', 'DONE')<CR>
+  """""""""""""""""""""""""""""""" bangmaps """""""""""""""""""""""""""""" {{{
+  " Repeat the last action. If the last action has been cleared, then 'DO' --> 'DONE'
+  nnoremap <silent> ! :call notes#banglist#bang()<CR>
   " Not sure how to do this one ==> '?'
-  nnoremap ? :call notes#banglist#controller('DO', 'Backburner')<CR>
+  nnoremap <silent> ? :call notes#banglist#non_bang('DO', 'Backburner')<CR>
   " I want to add work to my plate ==> '+'
-  nnoremap + :call notes#banglist#controller('Backburner', 'DO')<CR>
-
-  " Break sequences
-  nnoremap _ :unlet g:lib#prev_cur_pos['banglist']<CR>
-  " Find the next DO
-  nnoremap <Leader>! :call notes#banglist#controller('DO')<CR>
-  nnoremap <Leader>? :call notes#banglist#toggle_backburner_highlight()<CR>
-
+  nnoremap <silent> + :call notes#banglist#non_bang('Backburner', 'DO')<CR>
+  " Reset actions
+  nnoremap <silent> _ :call notes#banglist#reset()<CR>
+  " Find the next item
+  nnoremap <silent> [! :call notes#banglist#search('DO', 'forward')<CR>
+  nnoremap <silent> ]! :call notes#banglist#search('DO', 'backward')<CR>
+  nnoremap <silent> [x :call notes#banglist#search('DONE', 'forward')<CR>
+  nnoremap <silent> ]x :call notes#banglist#search('DONE', 'backward')<CR>
+  nnoremap <silent> [? :call notes#banglist#search('Backburner', 'forward')<CR>
+  nnoremap <silent> ]? :call notes#banglist#search('Backburner', 'backward')<CR>
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+  """"""""""""""""""""""""""""""" Notes stuff """""""""""""""""""""""""""" {{{
   " Bring TODOs to today's file, delete DONE banglist items, open the TODOs fold
   nnoremap <Leader>T :call notes#getNamedFold('TODOs') <Bar> call notes#banglist#global('DONE', 'delete') <Bar> FoldOpen TODOs<CR>
 
@@ -33,17 +38,15 @@ function! notes#init()
   nnoremap <Leader>y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
   nnoremap <Leader>Y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
 
-  " Reset journal state when changing days
-  command! Notes only <Bar> NotesToday <Bar> vsplit <Bar> NotesYesterday <Bar> wincmd h
-  command! -bar NotesToday execute "edit " . system('tail -1 .daykeeper | tr -d "\n"') . ".*"
-  command! -bar NotesYesterday execute "edit " . system('tail -2 .daykeeper | head -1 | tr -d "\n"') . ".*"
+  " Reset notes state when changing days
+  command! Notes only <Bar> GoNotesToday <Bar> vsplit <Bar> GoNotesYesterday <Bar> wincmd h
+  command! -bar GoNotesToday execute "edit " . system('tail -1 .daykeeper | tr -d "\n"') . ".*"
+  command! -bar GoNotesYesterday execute "edit " . system('tail -2 .daykeeper | head -1 | tr -d "\n"') . ".*"
 
-  " FoldOpen commands
+  " Jump straight to a specific named fold. FoldOpen commands
   command! -nargs=1 FoldOpen let g:notes_foldo = <q-args> <Bar> keeppatterns silent g/\c^{\{3,3} <args>/normal zx
   nnoremap <Leader>FT :FoldOpen TODOs<CR>
-
-  " Change curly quotes into regular quotes and stuff
-  command! FixPastedPDF keeppatterns call notes#fixPastedPDF()
+  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""" Copy Named Folds """"""""""""""""""""""""""""" {{{
@@ -57,18 +60,6 @@ function! notes#getNamedFold(pattern)
   let &foldlevel = l:saved_foldlevel
   execute 'wincmd w'
   .put 0
-endfunction
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
-"""""""""""""""""""""""" For copy/pasting from PDFs """""""""""""""""""""""" {{{
-" For copy/pasting that BS
-function! notes#fixPastedPDF()
-  %substitute/â/-/e
-  %substitute/â/'/e
-  %substitute/â/"/e
-  %substitute/â/"/e
-  %substitute/â¦/.../e
-  %substitute/â¢/*/e
-  %substitute/ï /->/e
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
