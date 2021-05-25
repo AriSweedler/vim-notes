@@ -24,7 +24,7 @@ function! notes#banglist#bang()
 
   " Set up the cache properly
   let s:should_slide = l:unmoved && l:prev_action
-  if ! l:prev_action
+  if ! s:should_slide
     let s:src_word = 'DO'
     let s:dst_word = 'DONE'
   endif
@@ -104,18 +104,18 @@ function! notes#banglist#toggle_backburner_highlight()
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""""" DONE highlight """""""""""""""""""""""""""""" {{{
-"" Toggle between 23 and 238. Half optimized for literally no reason haha !
-"let g:notes#banglist#dd_color = 23
-"function! notes#banglist#toggle_done_highlight()
-"  let g:notes#banglist#dd_color = 23 + (238-23)*(g:notes#banglist#dd_color == 23)
-"  execute "highlight notesDONE term=standout ctermfg=" . g:notes#banglist#dd_color
-"endfunction
+" Toggle between 23 and 31. Half optimized for literally no reason haha !
+let g:notes#banglist#dd_color = 23
+function! notes#banglist#toggle_done_highlight()
+  let g:notes#banglist#dd_color = 23 + (31-23)*(g:notes#banglist#dd_color == 23)
+  execute "highlight notesDONE term=standout ctermfg=" . g:notes#banglist#dd_color
+endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""""""""""" global """""""""""""""""""""""""""""""""" {{{
 " Acts just like :global, but only checks for banglist items. This is stricter
 " and more semantically useful sometimes
 function! notes#banglist#global(src, command)
-  let l:command = printf("global/%s/%s", notes#banglist#item(a:src), a:command)
+  let l:command = printf("global/%s/%s", notes#banglist#pat(a:src), a:command)
   execute l:command
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}

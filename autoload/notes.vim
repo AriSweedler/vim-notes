@@ -25,6 +25,10 @@ function! notes#init()
   nnoremap <silent> ]x :call notes#banglist#search('DONE', 'backward')<CR>
   nnoremap <silent> [? :call notes#banglist#search('Backburner', 'forward')<CR>
   nnoremap <silent> ]? :call notes#banglist#search('Backburner', 'backward')<CR>
+
+  " Toggle colors
+  nnoremap <silent> <Leader>? :call notes#banglist#toggle_backburner_highlight()<CR>
+  nnoremap <silent> <Leader><Leader>? :call notes#banglist#toggle_done_highlight()<CR>
   """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
   """"""""""""""""""""""""""""""" Notes stuff """""""""""""""""""""""""""" {{{
   " Bring TODOs to today's file, delete DONE banglist items, open the TODOs fold
