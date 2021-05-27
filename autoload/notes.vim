@@ -10,37 +10,38 @@ let g:loaded_sweedlerNotes = 1
 " real plugin, I would check to make sure I'm not overriding stuff first
 function! notes#init()
   """""""""""""""""""""""""""""""" bangmaps """""""""""""""""""""""""""""" {{{
+  " TODO this function should really just be in an ftplugin file
   " Repeat the last action. If the last action has been cleared, then 'DO' --> 'DONE'
-  nnoremap <silent> ! :call notes#banglist#bang()<CR>
+  nnoremap <Buffer> <silent> ! :call notes#banglist#bang()<CR>
   " Not sure how to do this one ==> '?'
-  nnoremap <silent> ? :call notes#banglist#non_bang('DO', 'Backburner')<CR>
+  nnoremap <Buffer> <silent> ? :call notes#banglist#non_bang('DO', 'Backburner')<CR>
   " I want to add work to my plate ==> '+'
-  nnoremap <silent> + :call notes#banglist#non_bang('Backburner', 'DO')<CR>
+  nnoremap <Buffer> <silent> + :call notes#banglist#non_bang('Backburner', 'DO')<CR>
   " Reset actions
-  nnoremap <silent> _ :call notes#banglist#reset()<CR>
+  nnoremap <Buffer> <silent> _ :call notes#banglist#reset()<CR>
   " Find the next item
-  nnoremap <silent> [! :call notes#banglist#search('DO', 'forward')<CR>
-  nnoremap <silent> ]! :call notes#banglist#search('DO', 'backward')<CR>
-  nnoremap <silent> [x :call notes#banglist#search('DONE', 'forward')<CR>
-  nnoremap <silent> ]x :call notes#banglist#search('DONE', 'backward')<CR>
-  nnoremap <silent> [? :call notes#banglist#search('Backburner', 'forward')<CR>
-  nnoremap <silent> ]? :call notes#banglist#search('Backburner', 'backward')<CR>
+  nnoremap <Buffer> <silent> [! :call notes#banglist#search('DO', 'forward')<CR>
+  nnoremap <Buffer> <silent> ]! :call notes#banglist#search('DO', 'backward')<CR>
+  nnoremap <Buffer> <silent> [x :call notes#banglist#search('DONE', 'forward')<CR>
+  nnoremap <Buffer> <silent> ]x :call notes#banglist#search('DONE', 'backward')<CR>
+  nnoremap <Buffer> <silent> [? :call notes#banglist#search('Backburner', 'forward')<CR>
+  nnoremap <Buffer> <silent> ]? :call notes#banglist#search('Backburner', 'backward')<CR>
 
   " Toggle colors
-  nnoremap <silent> <Leader>? :call notes#banglist#toggle_backburner_highlight()<CR>
-  nnoremap <silent> <Leader><Leader>? :call notes#banglist#toggle_done_highlight()<CR>
+  nnoremap <Buffer> <silent> <Leader>? :call notes#banglist#toggle_backburner_highlight()<CR>
+  nnoremap <Buffer> <silent> <Leader><Leader>? :call notes#banglist#toggle_done_highlight()<CR>
   """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
   """"""""""""""""""""""""""""""" Notes stuff """""""""""""""""""""""""""" {{{
   " Bring TODOs to today's file, delete DONE banglist items, open the TODOs fold
-  nnoremap <Leader>T :call notes#getNamedFold('TODOs') <Bar> call notes#banglist#global('DONE', 'delete') <Bar> FoldOpen TODOs<CR>
+  nnoremap <Buffer> <Leader>T :call notes#getNamedFold('TODOs') <Bar> call notes#banglist#global('DONE', 'delete') <Bar> FoldOpen TODOs<CR>
 
   command! TYesterday call notes#yesterday#openHelper('tabedit', 1)
   " Go to yesterday (<Leader>y) or tomorrow (<Leader>Y). Takes a count.
-  nnoremap [y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
-  nnoremap ]y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
+  nnoremap <Buffer> [y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
+  nnoremap <Buffer> ]y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
   " Trying out using brackets instead of leader/capitalization
-  nnoremap <Leader>y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
-  nnoremap <Leader>Y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
+  nnoremap <Buffer> <Leader>y :<C-u>call notes#yesterday#openHelper('edit', v:count)<CR>
+  nnoremap <Buffer> <Leader>Y :<C-u>call notes#yesterday#openHelper('edit', (v:count?0:-1) - v:count)<CR>
 
   " Reset notes state when changing days
   command! Notes only <Bar> GoNotesToday <Bar> vsplit <Bar> GoNotesYesterday <Bar> wincmd h
@@ -49,7 +50,7 @@ function! notes#init()
 
   " Jump straight to a specific named fold. FoldOpen commands
   command! -nargs=1 FoldOpen let g:notes_foldo = <q-args> <Bar> keeppatterns silent g/\c^{\{3,3} <args>/normal zx
-  nnoremap <Leader>FT :FoldOpen TODOs<CR>
+  nnoremap <Buffer> <Leader>FT :FoldOpen TODOs<CR>
   """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
