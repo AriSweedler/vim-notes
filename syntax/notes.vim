@@ -21,7 +21,7 @@ syntax keyword notesTodo TODO
 syntax case match
 " }}}
 " {{{ Define the horizontal rule
-syntax match notesHorizontalRule /^===$/
+syntax match notesHorizontalRule /^-\{3,}$/
 highlight link notesHorizontalRule notesBullet
 " }}}
 " {{{ Links
@@ -60,15 +60,18 @@ syntax region notesBold matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@=" mat
 syntax region notesBoldDO matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@=" matchgroup=notesBoldDelimiter end="\%(\S\)\@<=\*\*" keepend concealends contained containedin=notesBangListDO
 syntax region notesBoldDONE matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@=" matchgroup=notesBoldDelimiter end="\%(\S\)\@<=\*\*" keepend concealends contained containedin=notesBangListDONE
 
+syntax region notesSlang matchgroup=notesSlangDelimeter start="\<_\S\@=" matchgroup=notesSlangDelimeter end="\S\@<=_" keepend concealends contains=@NoSpell
+
 syntax region notesCodeLiteral matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contains=@NoSpell
 syntax region notesCodeLiteralDO matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDO contains=@NoSpell
 syntax region notesCodeLiteralDONE matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDONE contains=@NoSpell
 
 syntax cluster notesWeightedTextDelimiter contains=notesItalicDelimiter,notesBoldDelimiter,notesCodeLiteralDelimiter,notesBarDelimiter
-syntax cluster notesWeightedText contains=notesItalic,notesBold,notesCodeLiteral,@notesWeightedTextDelimiter,notesTodo
+syntax cluster notesWeightedText contains=notesItalic,notesBold,notesSlang,notesCodeLiteral,@notesWeightedTextDelimiter,notesTodo
 syntax cluster notesTextWeightedDO contains=notesItalicDO,notesBoldDO,notesCodeLiteralDO,@notesWeightedTextDelimiter,notesTodo
 syntax cluster notesTextWeightedDONE contains=notesItalicDONE,notesBoldDONE,notesCodeLiteralDONE,@notesWeightedTextDelimiter,notesTodo
 
+highlight notesSlang cterm=underline
 highlight notesItalic cterm=italic
 highlight notesItalicDO cterm=italic ctermfg=10
 highlight notesItalicDONE cterm=italic ctermfg=23
@@ -81,6 +84,7 @@ highlight notesCodeLiteral ctermbg=240
 highlight notesCodeLiteralDO ctermbg=240 ctermfg=10
 highlight notesCodeLiteralDONE ctermbg=240 ctermfg=32
 
+highlight notesSlangDelimeter ctermbg=202
 highlight notesItalicDelimiter ctermfg=22
 highlight notesBoldDelimiter ctermfg=27
 " }}}
