@@ -50,31 +50,27 @@ endfunction
 " Finds the next line containing src and changes it to dst. If 'slide' is set to
 " true, first changes this line from dst to src.
 "
-" TODO why does this fail iff we're at the start of a pattern? I don't get it.
-" Shouldn't the `normal 0` fix that?? I don't know what action is happening.
+" Moving to where we marked our last position will cause a slide, regardless
+" of what the text under cursor says. `!uW!` will this do strange things.
 function! notes#banglist#subslide(slide, src, dst)
-  " Set up pattern variables
-  let l:src_pat = notes#banglist#pat(a:src)
-  let l:dst_pat = notes#banglist#pat(a:dst)
-
   " Move to the start of the line before executing forward search, so
   " invocations work linewise isntead of characterwise
   normal 0
 
-  " If this action is a slide, then undo the substitution on this line. Move
-  " past it so the next search doesn't capture this new src pattern
+  " If this action is a slide, then undo the substitution on this line. Then,
+  " move to the end of the line (past the fresh src pattern) so the next
+  " search does something useful.
   if a:slide
-    execute "substitute/" . l:dst_pat . "/" . a:src . "/e 1"
+    execute "substitute/" . notes#banglist#pat(a:dst) . "/" . a:src . "/e 1"
     normal $
   endif
 
-  " Find the next pattern, substiture it, then move the cursor nicely
-  call search(l:src_pat)
-  execute "substitute/" . l:src_pat . "/" . a:dst . "/e 1"
-  call search(l:dst_pat)
+  " Find next src pattern, substitute, and place cursor on dst
+  call notes#banglist#search(a:src)
+  execute "substitute/" . notes#banglist#pat(a:src) . "/" . a:dst . "/e 1"
+  call notes#banglist#search(a:dst)
 
-  " We know that we've moved at this point. But the next time we check we
-  " wanna see if we've moved from here.
+  " Invoke to set our location, not determine if we've moved since last call.
   let _ = lib#cursorUnmoved('banglist')
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
@@ -87,8 +83,8 @@ function! notes#banglist#reset()
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""""""""""" search """""""""""""""""""""""""""""""""" {{{
-function! notes#banglist#search(word, direction)
-  let l:search_flags = a:direction == 'backward' ? '' : 'b'
+function! notes#banglist#search(word, ...)
+  let l:search_flags = (a:0 == 1 && a:1 == 'backward') ? 'b' : ''
   let l:pat = notes#banglist#pat(a:word)
   call search(l:pat, l:search_flags)
   " Open folds if need be
