@@ -62,9 +62,19 @@ syntax region notesBoldDONE matchgroup=notesBoldDelimiter start="\*\*\%(\S\)\@="
 
 syntax region notesSlang matchgroup=notesSlangDelimeter start="\<_\S\@=" matchgroup=notesSlangDelimeter end="\S\@<=_" keepend concealends contains=@NoSpell
 
-syntax region notesCodeLiteral matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contains=@NoSpell
-syntax region notesCodeLiteralDO matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDO contains=@NoSpell
-syntax region notesCodeLiteralDONE matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDONE contains=@NoSpell
+syntax region notesCodeLiteral matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter skip="\\`" end="\%(\S\)\@<=`" keepend concealends contains=@NoSpell,notesEscapedBackslash
+syntax match notesEscapedBackslash /\\`/ conceal cchar=`
+" Not making separate syntax items for these boys. Too messy, not worth it. I
+" should even remove the DO/DONE weighted text specials.
+"
+" I should clean this whole file up, actually. Get some BNF for this language
+" & auto-generate this syntax file from that. That would be A W E S O M E...
+" but... gotta actually fully appreciate and understand all of the annoying
+" sillies about this DSL, first. I can do it. Just will take time and I'll
+" need to blog about it. Creating examples along the way.
+highlight Conceal ctermbg=240
+syntax region notesCodeLiteralDO matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter skip="\\`" end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDO contains=@NoSpell,notesEscapedBackslash
+syntax region notesCodeLiteralDONE matchgroup=notesCodeLiteralDelimiter start="`\%(\S\)\@=" matchgroup=notesCodeLiteralDelimiter skip="\\`" end="\%(\S\)\@<=`" keepend concealends contained containedin=notesBangListDONE contains=@NoSpell,notesEscapedBackslash
 
 syntax cluster notesWeightedTextDelimiter contains=notesItalicDelimiter,notesBoldDelimiter,notesCodeLiteralDelimiter,notesBarDelimiter
 syntax cluster notesWeightedText contains=notesItalic,notesBold,notesSlang,notesCodeLiteral,@notesWeightedTextDelimiter,notesTodo
