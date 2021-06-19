@@ -5,47 +5,89 @@ if exists('g:loaded_sweedlerNotesSpellcheck')
 endif
 let g:loaded_sweedlerNotesSpellcheck = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""""""""""""" Start """"""""""""""""""""""""""""""""" {{{
+let s:spellchecking = 0
 function! spellcheck#start()
-  echom "Spellcheck started"
-  " While there're more spellings to check
+  let s:spellchecking = 1
+
+  " If we start on a misspelled word, we need to take a step back to operate
+  " on it when we call 'forward'
+  normal ge
+
+  " The main spellcheck loop {{{
+  while s:spellchecking
+    call spellcheck#forward()
+    call spellcheck#menu()
+  endwhile " }}}
+
+endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""" next - dispatch callback """""""""""""""""""""""" {{{
+function! spellcheck#menu()
+  " Highlight the word we're operating on (mark it, then highlight to end of
+  " word)
+  normal mz
+  let @/ = "\\w*\\%'z\\w*"
+  set hlsearch
+
+  " Update the screen before asking the user for input
+  redraw
+
+  " Get user input
+  let msg = "What do you wanna do?"
+  let choice = confirm(msg, s:GetChoicesString())
+
+  " 'confirm' indexes from 1,,, as opposed to arrays which index from 0
+  let l:Func = s:choices[choice-1][1]
+
+  " Dispatch callback
+  call l:Func()
+
+  " Make a new entry in the undo sequence
+  execute "normal i\<C-g>u"
+endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+"""""""""""""""""""""""""" spellcheck callbacks """""""""""""""""""""""""" {{{
+function! spellcheck#surround_backticks()
+  normal viws`
 endfunction
 
+function! spellcheck#surround_underline()
+  normal viws_
+endfunction
+
+function! spellcheck#zEqual()
+  normal 1z=
+endfunction
+
+function! spellcheck#zg()
+  normal zg
+endfunction
+
+function! spellcheck#back()
+  normal [s
+endfunction
+
+function! spellcheck#forward()
+  normal ]s
+endfunction
+
+function! spellcheck#end()
+  let s:spellchecking = 0
+endfunction
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
+""""""""""""""""""""""""""""" define the menu """""""""""""""""""""""""""" {{{
 " TODO instead of `autocorrect` what if I could display the top N spellings
 " I can use 'complete_info(["spell"])' & slice it.
 let s:choices = []
 let s:choices += [["&` code literal", function("spellcheck#surround_backticks")]]
 let s:choices += [["&_ ignore", function("spellcheck#surround_underline")]]
-let s:choices += [["&autocorrect", function("spellcheck#zEqual")]]
+let s:choices += [["&z= autocorrect", function("spellcheck#zEqual")]]
 let s:choices += [["&learn word", function("spellcheck#zg")]]
-
-function! spellcheck#surround_backticks()
-  echom "TODO backticks"
-endfunction
-
-function! spellcheck#surround_underline()
-  echom "TODO underline"
-endfunction
-
-function! spellcheck#zEqual()
-  echom "TODO z="
-endfunction
-
-function! spellcheck#zg()
-  echom "TODO zg"
-endfunction
-
+let s:choices += [["&back", function("spellcheck#back")]]
+let s:choices += [["&forward", function("spellcheck#forward")]]
+let s:choices += [["&quit spellshecker", function("spellcheck#end")]]
 function! s:GetChoicesString()
   return mapnew(s:choices, 'v:val[0]')->join("\n")
 endfunction
-
-function! spellcheck#next()
-  let msg = "What do you wanna do?"
-
-  let choice = confirm(msg, s:GetChoicesString())
-  let MyFunc = s:choices[choice-1][1]
-  echom "You wanted " . choice . " which corresponds to "
-  echom l:MyFunc
-  call l:MyFunc()
-endfunction
-
-" call spellcheck#next()
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
