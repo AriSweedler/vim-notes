@@ -44,7 +44,7 @@ function! spellcheck#menu()
   call l:Func()
 
   " Make a new entry in the undo sequence
-  execute "normal i\<C-g>u"
+  call lib#break_undo()
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""" spellcheck callbacks """""""""""""""""""""""""" {{{
@@ -74,6 +74,7 @@ endfunction
 
 function! spellcheck#end()
   let s:spellchecking = 0
+  nohlsearch
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""" define the menu """""""""""""""""""""""""""" {{{
