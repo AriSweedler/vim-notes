@@ -111,7 +111,7 @@ endfunction
 " Acts just like :global, but only checks for banglist items. This is stricter
 " and more semantically useful sometimes
 function! notes#banglist#global(src, command)
-  let l:command = printf("global/%s/%s", notes#banglist#pat(a:src), a:command)
+  let l:command = printf("silent global/%s/%s", notes#banglist#pat(a:src), a:command)
   execute l:command
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}

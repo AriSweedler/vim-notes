@@ -44,13 +44,16 @@ nnoremap <buffer> <silent> ]x :call notes#banglist#search('DONE', 'forward')<CR>
 nnoremap <buffer> <silent> [? :call notes#banglist#search('Backburner', 'backward')<CR>
 nnoremap <buffer> <silent> ]? :call notes#banglist#search('Backburner', 'forward')<CR>
 
+" Make a bullet a banglist item
+nnoremap <buffer> <silent> <Leader>! $?\*<CR>wiDO <C-c>A !<C-c>:nohlsearch<CR>
+
 " Toggle colors
 nnoremap <buffer> <silent> <Leader>? :call notes#banglist#toggle_backburner_highlight()<CR>
 nnoremap <buffer> <silent> <Leader><Leader>? :call notes#banglist#toggle_done_highlight()<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """"""""""""""""""""""""""""""" Notes stuff """""""""""""""""""""""""""" {{{
 " Bring TODOs to today's file, delete DONE banglist items, open the TODOs fold
-nnoremap <buffer> <Leader>T :call notes#getNamedFold('TODOs') <Bar> call notes#banglist#global('DONE', 'delete') <Bar> FoldOpen TODOs<CR>
+nnoremap <buffer> <silent> <Leader>T :call notes#getNamedFold('TODOs') <Bar> call notes#banglist#global('DONE', 'delete') <Bar> FoldOpen TODOs<CR>
 
 command! TYesterday call notes#yesterday#openHelper('tabedit', 1)
 " Go to yesterday (<Leader>y) or tomorrow (<Leader>Y). Takes a count.
@@ -71,4 +74,5 @@ nnoremap <buffer> <Leader>FT :FoldOpen TODOs<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""""" spellcheck stuff """""""""""""""""""""""""""" {{{
 nnoremap <buffer> <Leader>z :call spellcheck#start()<CR>
+nnoremap <buffer> <Leader>Z [s:call spellcheck#start()<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}

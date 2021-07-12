@@ -1,13 +1,14 @@
 """"""""""""""""""""""""""""""" Include guard """""""""""""""""""""""""""""" {{{
-" TODO disabled
 if exists('g:loaded_sweedlerNotesSpellcheck')
-  "finish
+  finish
 endif
 let g:loaded_sweedlerNotesSpellcheck = 1
+" TODO move this to its own plugin
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""""""""""""" Start """"""""""""""""""""""""""""""""" {{{
 let s:spellchecking = 0
 function! spellcheck#start()
+  let save_cursor = getcurpos()
   let s:spellchecking = 1
 
   " If we start on a misspelled word, we need to take a step back to operate
@@ -20,6 +21,7 @@ function! spellcheck#start()
     call spellcheck#menu()
   endwhile " }}}
 
+  call setpos('.', save_cursor)
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
 """""""""""""""""""""""" next - dispatch callback """""""""""""""""""""""" {{{
