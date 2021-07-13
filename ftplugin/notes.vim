@@ -72,7 +72,3 @@ command! -bar GoNotesYesterday execute "edit " . system('tail -2 .daykeeper | he
 command! -nargs=1 FoldOpen let g:notes_foldo = <q-args> <Bar> keeppatterns silent g/\c^{\{3,3} <args>/normal zx
 nnoremap <buffer> <Leader>FT :FoldOpen TODOs<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
-"""""""""""""""""""""""""""" spellcheck stuff """""""""""""""""""""""""""" {{{
-nnoremap <buffer> <Leader>z :call spellcheck#start()<CR>
-nnoremap <buffer> <Leader>Z [s:call spellcheck#start()<CR>
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
