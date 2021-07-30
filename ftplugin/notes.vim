@@ -71,4 +71,7 @@ command! -bar GoNotesYesterday execute "edit " . system('tail -2 .daykeeper | he
 " Jump straight to a specific named fold. FoldOpen commands
 command! -nargs=1 FoldOpen let g:notes_foldo = <q-args> <Bar> keeppatterns silent g/\c^{\{3,3} <args>/normal zx
 nnoremap <buffer> <Leader>FT :FoldOpen TODOs<CR>
+
+" Horizontal line rule
+nnoremap <Leader>- o----<C-c>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}
