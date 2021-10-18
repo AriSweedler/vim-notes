@@ -100,8 +100,8 @@ highlight notesBoldDelimiter ctermfg=27
 " }}}
 " {{{ Codeblocks and blockquotes
 syntax region notesCodeblockRegion start="^$\n\%( \{4}\)" end="^\%( \{4}\)\@!" contains=notesCodeblockLiteral keepend fold
-syntax match notesCodeblockLiteral /^\%( \{4}\).*$/ms=s+4 contains=@NoSpell contained
-syntax region notesBlockquote matchgroup=notesBlockquoteDelimiter start="^> " end="$" contains=@notesText fold
+syntax match notesCodeblockLiteral /^\%( \{4}\).*$/ms=s+4 contains=@NoSpell contained fold
+syntax region notesBlockquote matchgroup=notesBlockquoteDelimiter start="^> " end="$" contains=@NoSpell fold
 syntax cluster notesBlocks contains=notesCodeblockRegion,notesBlockquote
 
 highlight link notesCodeblockRegion Normal
