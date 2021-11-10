@@ -3,7 +3,7 @@ setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 setlocal spell
 
 " Textwrap at 80 columns
-call lib#changeTextWidth(80)
+call lib#change_text_width(80)
 
 " Set folding for 3-backtick markdown divider block
 setlocal foldmethod=marker foldmarker={{{,}}}
