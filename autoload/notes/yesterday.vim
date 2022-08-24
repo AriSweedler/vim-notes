@@ -13,11 +13,11 @@ function! notes#yesterday#getFileName(...)
     let l:days_ago = 1
   endif
 
-  " Take the n'th line from the end in our .daykeeper file
+  " Take the n'th line from the end in our .datekeeper file
 
-  " Get the line number in the daykeeper file for today's file
+  " Get the line number in the datekeeper file for today's file
   let filename = expand("%:.:r")->substitute("/", "\\\\/", "g")
-  let line_number = system('sed -n "/' . l:filename . '/=" .daykeeper')
+  let line_number = system('sed -n "/' . l:filename . '/=" .datekeeper')
   let desired_line_number = l:line_number - l:days_ago
 
   " Don't try to open a file we haven't written yet
@@ -25,9 +25,9 @@ function! notes#yesterday#getFileName(...)
     let l:desired_line_number = 1
   endif
 
-  " Return the contents of the desired line. For a .daykeeper file, this should
+  " Return the contents of the desired line. For a .datekeeper file, this should
   " be a filename without an extension
-  let get_line_contents = "head -" . l:desired_line_number . " .daykeeper | tail -1 | tr -d '\n'"
+  let get_line_contents = "head -" . l:desired_line_number . " .datekeeper | tail -1 | tr -d '\n'"
   return system(l:get_line_contents)
 endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" }}}

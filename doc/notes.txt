@@ -17,8 +17,8 @@ I have a mental model of what note-taking should be. If you wanna use this
 plugin, subscribe to that. Use the bash script linked in |notes-plugin|
 
 The script does 2 important things:
-1. cd's to the |notes-home-directory|, and logs entries in .daykeeper (see
-  * |notes-daykeeper| being in the pwd is needed for the |notes-yesterday|
+1. cd's to the |notes-home-directory|, and logs entries in .datekeeper (see
+  * |notes-datekeeper| being in the pwd is needed for the |notes-yesterday|
   commands to work.
 2. Open today's note file and yesterday's note file in split windows.
   * I like having yesterdays notes open in a vertical split to quickly refer
@@ -43,10 +43,10 @@ Named folds             A few functions can operate on these objects. It's
                                                 *notes-home-directory*
 Notes Home Directory    Every file must be under this in the heirarchy. The
                         .git repo tracking your notes should also reside here.
-                        And the |notes-daykeeper| file, too.
+                        And the |notes-datekeeper| file, too.
 
-                                                *notes-daykeeper*
-.daykeeper              A file in the |notes-home-directory|. Keeps track of
+                                                *notes-datekeeper*
+.datekeeper              A file in the |notes-home-directory|. Keeps track of
                         every day that you take notes. (So if it's a Monday,
                         we can easily see that Friday is "yesterday".) Just a
                         super simple implementation of finding what day
@@ -157,12 +157,12 @@ MAPS                                            *notes-maps*
 <Leader>T               Bring over the named fold 'TODOs' from yesterdays's
                         file. Delete all the |banglist-DONE| lines after
                         making the move. See |notes-named-folds| and
-                        |notes-daykeeper|.
+                        |notes-datekeeper|.
 
                                                 *notes-<Leader>y*
                                                 *notes-yesterday*
 <Leader>y               Edit yesterday's file, relative to the current file
-                        (look this up in the |notes-daykeeper| file). If given
+                        (look this up in the |notes-datekeeper| file). If given
                         a [count], go back [count] days.
 
                                                 *notes-<Leader>Y*

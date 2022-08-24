@@ -3,6 +3,8 @@ if exists("b:current_syntax")
   finish
 endif
 
+runtime! syntax/markdown.vim
+
 """"""""""""""""""""""" syntax & highlight group links """"""""""""""""""""{{{
 " {{{ Fold
 syntax match notesNamedFoldStart +^{{{+ nextgroup=notesNamedFoldHeader,notesLogStart
