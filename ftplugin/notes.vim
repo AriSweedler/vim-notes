@@ -1,4 +1,5 @@
 " This is a markdown file
+let g:markdown_folding = 1
 runtime! ftplugin/markdown.vim
 
 " Indent settings
@@ -21,6 +22,8 @@ setlocal concealcursor=nc
 
 "Show how deep in folds each line is in the left columns
 setlocal foldcolumn=2
+" TODO this shouldn't be sourced on EVERY SAVE!?
+" setlocal foldlevel=1
 
 """""""""""""""""""""""" Initialize notes mappings """"""""""""""""""""""" {{{
 " Initialize all the mappings for `.notes` files.
